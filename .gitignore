@@ -1,0 +1,25 @@
+# Gradle files
+.gradle/  
+build/
+/target
+
+#logs
+*.log
+
+# Java class files
+*.class
+
+#idea
+.idea/
+*.iml
+
+#eclipse
+.classpath
+.project
+
+#other
+.DS_Store
+.gitattributes
+/lib
+/logs
+

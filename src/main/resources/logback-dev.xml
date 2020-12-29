@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/base.xml"/>
+
+    <!-- 定义日志文件名称,与工程名一致 -->
+    <property name="APP_NAME" value="auth-server" />
+    <!-- 定义日志根目录 -->
+    <property name="LOG_HOME" value="./logs" />
+
+    <!-- 屏幕输出的通道 -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
+            </pattern>
+        </encoder>
+    </appender>
+
+    <!-- 文件输出设置 按照每天生成日志文件 -->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <Prudent>true</Prudent>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>
+                ${LOG_HOME}/${APP_NAME}/${APP_NAME}-%d{yyyy-MM-dd}.log
+            </FileNamePattern>
+        </rollingPolicy>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <!--日期 日志级别 线程号 内容 换行符 -->
+            <pattern>
+                %d{yyyy-MM-dd HH:mm:ss.SSS}  %-5level  [%thread]  [%logger{80}] --- %msg%n
+            </pattern>
+        </layout>
+    </appender>
+
+    <appender name="FILE_ERROR"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <Prudent>true</Prudent>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>
+                ${LOG_HOME}/${APP_NAME}/${APP_NAME}-error-%d{yyyy-MM-dd}.log
+            </FileNamePattern>
+        </rollingPolicy>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <!--日期 日志级别 线程号 内容 换行符 -->
+            <pattern>
+                %d{yyyy-MM-dd HH:mm:ss.SSS}  %-5level  [%thread]  [%logger{80}] --- %msg%n
+            </pattern>
+        </layout>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>WARN</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+    <!-- 修改其他包的日志输出级别 -->
+    <logger name="com.ibatis">
+        <level value="DEBUG"/>
+    </logger>
+
+    <!--生产环境用INFO-->
+    <root level="INFO">
+        <appender-ref ref="STDOUT"/>
+        <!--<appender-ref ref="FILE"/>-->
+        <!--<appender-ref ref="FILE_ERROR"/>-->
+    </root>
+</configuration>

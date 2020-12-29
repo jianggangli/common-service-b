@@ -1,0 +1,95 @@
+/**
+ * gralde依赖
+ */
+buildscript {
+	ext {
+		springBootVersion = '2.1.0.RELEASE'
+		springCloudVersion = 'Finchley.SR2'
+	}
+	repositories {
+		mavenCentral()
+		maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
+	}
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+		classpath "io.spring.gradle:dependency-management-plugin:1.0.2.RELEASE"
+	}
+}
+
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+
+group = 'com.entian'
+version = '1.0'
+def artifactId = "common-service-b"
+def nexusUrl = "http://192.168.186.222:8081/repository/maven-public/"
+
+compileJava {
+	sourceCompatibility = 1.8
+	targetCompatibility = 1.8
+}
+
+repositories {
+	jcenter()
+//	maven {
+//		url "$nexusUrl"
+//		credentials {
+//			username = "admin"
+//			password = "admin123"
+//		}
+//	}
+	mavenLocal()
+	mavenCentral()
+	maven {
+		url 'http://repo.spring.io/milestone'
+	}
+	maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
+}
+
+
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+	}
+}
+/**
+ * 依赖[group:id:version]
+ */
+dependencies {
+	compile('org.springframework.boot:spring-boot-starter-web')
+	// fastjson
+	compile group: 'com.alibaba', name: 'fastjson', version: '1.2.47'
+	compile group: 'com.alibaba', name: 'druid-spring-boot-starter', version: '1.1.9'
+	//compile group: 'com.alibaba', name: 'druid', version: '1.2.0'
+	compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.11'
+	compile group: 'com.baomidou', name: 'mybatis-plus-generator', version: '3.3.0'
+	compile group: 'com.github.xiaoymin', name: 'knife4j-spring-boot-starter', version: '2.0.2'
+	//MyBatis Plus » 3.4.0
+	compile group: 'com.baomidou', name: 'mybatis-plus-boot-starter', version: '3.4.0'
+	compile group: 'com.alibaba', name: 'druid', version: '1.1.6'
+	compile('cn.hutool:hutool-all:5.3.3');
+	annotationProcessor 'org.projectlombok:lombok:1.18.2'
+	compileOnly 'org.projectlombok:lombok:1.18.2'
+	compile('org.apache.rocketmq:rocketmq-spring-boot-starter:2.1.0');
+	compile group: 'org.aspectj', name: 'aspectjrt', version: '1.9.5'
+
+
+	testAnnotationProcessor 'org.projectlombok:lombok:1.18.2'
+	testCompileOnly 'org.projectlombok:lombok:1.18.2'
+
+	testCompile group: 'junit', name: 'junit', version: '4.12';
+}
+
+/**
+ * 打jar
+ */
+jar {
+    baseName = "$artifactId"
+    version = "$project.version"
+    manifest {
+        attributes "Manifest-Version": 1.0,
+                'Main-Class': 'com.entian.web.ApplicationStart'
+    }
+}
